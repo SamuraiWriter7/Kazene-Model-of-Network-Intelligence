@@ -1,0 +1,671 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kazene.org/schemas/trust-profile-v0.1.schema.json",
+  "title": "Trust Profile v0.1",
+  "description": "A JSON Schema for representing structural trust in the Kazene Model of Network Intelligence (KMNI). A trust profile aggregates verified traces, gratitude receipts, contribution history, and governance signals into a multidimensional credibility structure.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile_id",
+    "subject",
+    "calculated_at",
+    "trust_score",
+    "trust_dimensions",
+    "input_summary",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1",
+      "description": "Schema version of this trust profile."
+    },
+    "profile_id": {
+      "type": "string",
+      "pattern": "^trust_profile_[A-Za-z0-9._-]+$",
+      "description": "Unique identifier for the trust profile."
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_id",
+        "subject_type"
+      ],
+      "properties": {
+        "subject_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier of the human, AI agent, model, repository, organization, protocol, or workflow being evaluated."
+        },
+        "subject_type": {
+          "type": "string",
+          "enum": [
+            "human",
+            "ai_agent",
+            "model",
+            "repository",
+            "organization",
+            "protocol",
+            "hybrid_workflow",
+            "unknown"
+          ],
+          "description": "Type of subject represented by this trust profile."
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional display name of the subject."
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional primary role of the subject in the network."
+        },
+        "model_family": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional model family or agent family when subject_type is ai_agent or model."
+        }
+      }
+    },
+    "calculated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when this trust profile was calculated or updated."
+    },
+    "calculation_period": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional time period used for calculating this trust profile.",
+      "properties": {
+        "from": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start timestamp of the calculation period."
+        },
+        "to": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End timestamp of the calculation period."
+        },
+        "period_label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional human-readable period label, such as 2026-04 or Q2-2026."
+        }
+      }
+    },
+    "trust_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Overall trust score. This is a summary value only; trust_dimensions should be treated as the primary structure."
+    },
+    "trust_dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "creativity",
+        "reliability",
+        "collaboration",
+        "structural_contribution"
+      ],
+      "properties": {
+        "creativity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Ability to generate novel and useful traces."
+        },
+        "reliability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Consistency and practical dependability of contributions."
+        },
+        "collaboration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Ability to work constructively with other humans, agents, protocols, or systems."
+        },
+        "verification_quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Ability to review, verify, audit, or improve outputs."
+        },
+        "structural_contribution": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Contribution to reusable structures, protocols, models, architectures, or governance layers."
+        },
+        "governance_alignment": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Alignment with declared network policies, norms, and governance principles."
+        },
+        "resilience": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Ability to maintain value under stress, uncertainty, disagreement, or changing conditions."
+        },
+        "continuity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Long-term consistency of contribution over time."
+        }
+      }
+    },
+    "input_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verified_traces",
+        "gratitude_receipts"
+      ],
+      "properties": {
+        "verified_traces": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of verified traces used in the trust calculation."
+        },
+        "gratitude_receipts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of gratitude receipts used in the trust calculation."
+        },
+        "successful_collaborations": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of successful collaboration events considered."
+        },
+        "verification_events": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of verification or review events considered."
+        },
+        "disputed_events": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of disputed events considered in the profile."
+        },
+        "rejected_events": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of rejected or invalidated events considered."
+        }
+      }
+    },
+    "source_traces": {
+      "type": "array",
+      "description": "Optional list of trace IDs used as evidence in this trust profile.",
+      "items": {
+        "type": "string",
+        "pattern": "^trace_[A-Za-z0-9._-]+$"
+      },
+      "uniqueItems": true
+    },
+    "source_gratitude_receipts": {
+      "type": "array",
+      "description": "Optional list of gratitude receipt IDs used as evidence in this trust profile.",
+      "items": {
+        "type": "string",
+        "pattern": "^gratitude_[A-Za-z0-9._-]+$"
+      },
+      "uniqueItems": true
+    },
+    "trust_update_events": {
+      "type": "array",
+      "description": "Optional list of trust update events that contributed to this profile.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "event_type",
+          "occurred_at"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "pattern": "^trust_update_[A-Za-z0-9._-]+$",
+            "description": "Unique identifier for the trust update event."
+          },
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "gratitude_aggregation",
+              "trace_verification",
+              "collaboration_success",
+              "verification_success",
+              "governance_review",
+              "dispute_adjustment",
+              "decay_adjustment",
+              "manual_adjustment",
+              "other"
+            ],
+            "description": "Type of trust update event."
+          },
+          "source_trace_id": {
+            "type": "string",
+            "pattern": "^trace_[A-Za-z0-9._-]+$",
+            "description": "Optional source trace ID related to this trust update."
+          },
+          "source_gratitude_id": {
+            "type": "string",
+            "pattern": "^gratitude_[A-Za-z0-9._-]+$",
+            "description": "Optional source gratitude receipt ID related to this trust update."
+          },
+          "dimension_changes": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Optional trust dimension changes produced by this event.",
+            "properties": {
+              "creativity": {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 1
+              },
+              "reliability": {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 1
+              },
+              "collaboration": {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 1
+              },
+              "verification_quality": {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 1
+              },
+              "structural_contribution": {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 1
+              },
+              "governance_alignment": {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 1
+              },
+              "resilience": {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 1
+              },
+              "continuity": {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 1
+              }
+            }
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Human-readable reason for the trust update."
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when this trust update event occurred."
+          }
+        }
+      }
+    },
+    "role_recommendations": {
+      "type": "array",
+      "description": "Optional role recommendations derived from the trust profile.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "confidence"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "ideation",
+              "concept_generation",
+              "implementation",
+              "review",
+              "audit",
+              "verification",
+              "coordination",
+              "protocol_design",
+              "governance_participation",
+              "maintenance",
+              "other"
+            ],
+            "description": "Recommended role for the subject."
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence level of the role recommendation."
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Optional reason for this role recommendation."
+          }
+        }
+      }
+    },
+    "decay_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional decay policy used to prevent old trust from becoming frozen authority.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether trust decay is enabled."
+        },
+        "half_life_days": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Half-life period in days for operational trust weight."
+        },
+        "minimum_retained_weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Minimum retained historical weight after decay."
+        },
+        "protected_dimensions": {
+          "type": "array",
+          "description": "Dimensions that should retain historical memory or be protected from full decay.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "creativity",
+              "reliability",
+              "collaboration",
+              "verification_quality",
+              "structural_contribution",
+              "governance_alignment",
+              "resilience",
+              "continuity",
+              "historical_contribution"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional governance metadata for how this trust profile may be used.",
+      "properties": {
+        "policy_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Governance policy used for this trust profile."
+        },
+        "eligible_for_value_allocation": {
+          "type": "boolean",
+          "description": "Whether this trust profile is eligible to be used by Royalty OS for value allocation."
+        },
+        "eligible_for_governance_participation": {
+          "type": "boolean",
+          "description": "Whether this trust profile is eligible for governance participation."
+        },
+        "review_required": {
+          "type": "boolean",
+          "description": "Whether manual or governance review is required before operational use."
+        },
+        "governance_note": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Optional governance note."
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional verification metadata for this trust profile.",
+      "properties": {
+        "verification_method": {
+          "type": "string",
+          "enum": [
+            "automated_calculation",
+            "manual_review",
+            "cross_agent_review",
+            "governance_review",
+            "repository_commit",
+            "hash_only",
+            "other"
+          ],
+          "description": "Method used to verify this trust profile."
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Whether this trust profile has passed the stated verification method."
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp when verification was completed."
+        },
+        "verifier_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional identifier of the verifier."
+        },
+        "profile_hash": {
+          "type": "string",
+          "pattern": "^sha256:[A-Fa-f0-9]{64}$",
+          "description": "Optional hash of the trust profile for integrity verification."
+        }
+      }
+    },
+    "anti_abuse": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional anti-abuse metadata used to reduce collusion, trust inflation, sybil behavior, and reputation farming.",
+      "properties": {
+        "sybil_risk_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated sybil risk score. 0 means low risk; 1 means high risk."
+        },
+        "collusion_risk_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated collusion risk score. 0 means low risk; 1 means high risk."
+        },
+        "gratitude_loop_detected": {
+          "type": "boolean",
+          "description": "Whether artificial or suspicious gratitude loops were detected."
+        },
+        "manual_review_required": {
+          "type": "boolean",
+          "description": "Whether manual review is required due to abuse risk."
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Optional anti-abuse note."
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Optional tags for classification and search.",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "provisional",
+        "under_review",
+        "disputed",
+        "superseded",
+        "withdrawn",
+        "archived",
+        "rejected"
+      ],
+      "description": "Current status of the trust profile."
+    },
+    "status_note": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional explanation of the current trust profile status."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "disputed"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "status_note"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "governance": {
+            "properties": {
+              "review_required": {
+                "const": true
+              }
+            },
+            "required": [
+              "review_required"
+            ]
+          }
+        },
+        "required": [
+          "governance"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "provisional",
+              "under_review",
+              "disputed"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "examples": [
+    {
+      "schema_version": "0.1",
+      "profile_id": "trust_profile_shidenkai_alpha_001",
+      "subject": {
+        "subject_id": "shidenkai_alpha",
+        "subject_type": "human",
+        "display_name": "Shidenkai Alpha",
+        "role": "concept_author"
+      },
+      "calculated_at": "2026-04-26T00:20:00Z",
+      "calculation_period": {
+        "from": "2026-04-26T00:00:00Z",
+        "to": "2026-04-26T00:20:00Z",
+        "period_label": "initial-kmni-v0.1"
+      },
+      "trust_score": 0.76,
+      "trust_dimensions": {
+        "creativity": 0.9,
+        "reliability": 0.68,
+        "collaboration": 0.74,
+        "verification_quality": 0.7,
+        "structural_contribution": 0.88,
+        "governance_alignment": 0.72,
+        "resilience": 0.71,
+        "continuity": 0.69
+      },
+      "input_summary": {
+        "verified_traces": 1,
+        "gratitude_receipts": 1,
+        "successful_collaborations": 1,
+        "verification_events": 1,
+        "disputed_events": 0,
+        "rejected_events": 0
+      },
+      "source_traces": [
+        "trace_kmni_concept_001"
+      ],
+      "source_gratitude_receipts": [
+        "gratitude_kmni_001"
+      ],
+      "role_recommendations": [
+        {
+          "role": "protocol_design",
+          "confidence": 0.86,
+          "reason": "High structural contribution and creativity scores indicate strong suitability for conceptual protocol design."
+        }
+      ],
+      "decay_policy": {
+        "enabled": true,
+        "half_life_days": 180,
+        "minimum_retained_weight": 0.2,
+        "protected_dimensions": [
+          "structural_contribution",
+          "historical_contribution"
+        ]
+      },
+      "governance": {
+        "policy_id": "trust_policy_v0.1",
+        "eligible_for_value_allocation": true,
+        "eligible_for_governance_participation": true,
+        "review_required": false
+      },
+      "verification": {
+        "verification_method": "manual_review",
+        "verified": true,
+        "verified_at": "2026-04-26T00:22:00Z",
+        "verifier_id": "review_agent_001"
+      },
+      "anti_abuse": {
+        "sybil_risk_score": 0.02,
+        "collusion_risk_score": 0.04,
+        "gratitude_loop_detected": false,
+        "manual_review_required": false
+      },
+      "tags": [
+        "kazene",
+        "trust-os",
+        "kmni",
+        "structural-trust"
+      ],
+      "status": "active"
+    }
+  ]
+}

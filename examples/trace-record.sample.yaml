@@ -1,0 +1,46 @@
+schema_version: "0.1"
+
+trace_id: trace_kmni_concept_001
+trace_type: concept
+trace_hash: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+content_reference: docs/whitepaper-v0.1.md
+content_summary: >-
+  Initial concept definition of the Kazene Model of Network Intelligence,
+  describing intelligence as an emergent network structure based on traces,
+  gratitude, trust, and value circulation.
+
+creator:
+  creator_id: shidenkai_alpha
+  creator_type: human
+  display_name: Shidenkai Alpha
+  role: author
+
+created_at: "2026-04-26T00:00:00Z"
+registered_at: "2026-04-26T00:05:00Z"
+
+provenance: original_draft
+
+disclosure:
+  disclosure_level: public
+  content_access: open
+  privacy_note: >-
+    This trace record references a public conceptual document.
+    No private content is included in this sample.
+
+verification:
+  verification_method: hash_only
+  verified: true
+  verified_at: "2026-04-26T00:06:00Z"
+
+tags:
+  - kazene
+  - network-intelligence
+  - trace-record
+  - existence-proof-os
+  - kmni
+
+status: active
+status_note: >-
+  Initial active trace record for the Kazene Model of Network Intelligence
+  whitepaper concept.

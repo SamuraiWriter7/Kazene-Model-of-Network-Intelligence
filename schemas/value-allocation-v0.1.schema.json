@@ -1,0 +1,676 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kazene.org/schemas/value-allocation-v0.1.schema.json",
+  "title": "Value Allocation v0.1",
+  "description": "A JSON Schema for allocating monetary or non-monetary value in the Kazene Model of Network Intelligence (KMNI). A value allocation record distributes value based on verified traces, gratitude receipts, trust profiles, contribution weights, and governance rules.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "allocation_id",
+    "allocation_period",
+    "value_pool",
+    "distribution_type",
+    "allocation_basis",
+    "governance_policy",
+    "created_at",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1",
+      "description": "Schema version of this value allocation record."
+    },
+    "allocation_id": {
+      "type": "string",
+      "pattern": "^allocation_[A-Za-z0-9._-]+$",
+      "description": "Unique identifier for the value allocation record."
+    },
+    "allocation_period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "period_label"
+      ],
+      "properties": {
+        "period_label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable allocation period label, such as 2026-04 or initial-kmni-v0.1."
+        },
+        "from": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional start timestamp of the allocation period."
+        },
+        "to": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional end timestamp of the allocation period."
+        }
+      }
+    },
+    "value_pool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pool_id",
+        "pool_type",
+        "total_units",
+        "unit_name"
+      ],
+      "properties": {
+        "pool_id": {
+          "type": "string",
+          "pattern": "^pool_[A-Za-z0-9._-]+$",
+          "description": "Identifier of the value pool used for allocation."
+        },
+        "pool_type": {
+          "type": "string",
+          "enum": [
+            "monetary",
+            "non_monetary",
+            "hybrid",
+            "governance",
+            "visibility",
+            "compute_resource",
+            "access_priority",
+            "other"
+          ],
+          "description": "Type of value pool."
+        },
+        "total_units": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Total number of units available in the pool."
+        },
+        "unit_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the allocation unit, such as network_credit, visibility_point, royalty_unit, compute_credit, or governance_weight."
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "Optional ISO 4217 currency code when pool_type is monetary or hybrid."
+        },
+        "pool_description": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Optional human-readable description of the value pool."
+        }
+      }
+    },
+    "distribution_type": {
+      "type": "string",
+      "enum": [
+        "monetary_payment",
+        "non_monetary_credit",
+        "visibility_priority",
+        "recommendation_weight",
+        "task_priority",
+        "collaboration_right",
+        "governance_weight",
+        "access_priority",
+        "attribution_priority",
+        "royalty_pool_share",
+        "compute_resource_share",
+        "protocol_influence_weight",
+        "hybrid_distribution",
+        "other"
+      ],
+      "description": "Type of value being distributed."
+    },
+    "allocation_basis": {
+      "type": "array",
+      "description": "List of contribution entries used as the basis for value allocation.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "entry_id",
+          "trace_id",
+          "contributor_id",
+          "contribution_type",
+          "final_weight",
+          "allocated_units"
+        ],
+        "properties": {
+          "entry_id": {
+            "type": "string",
+            "pattern": "^allocation_entry_[A-Za-z0-9._-]+$",
+            "description": "Unique identifier for this allocation entry."
+          },
+          "trace_id": {
+            "type": "string",
+            "pattern": "^trace_[A-Za-z0-9._-]+$",
+            "description": "Trace ID used as an allocation target."
+          },
+          "contributor_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Identifier of the human, AI agent, model, repository, organization, protocol, or workflow receiving value."
+          },
+          "contributor_type": {
+            "type": "string",
+            "enum": [
+              "human",
+              "ai_agent",
+              "model",
+              "repository",
+              "organization",
+              "protocol",
+              "hybrid_workflow",
+              "unknown"
+            ],
+            "description": "Optional type of contributor receiving value."
+          },
+          "trust_profile_id": {
+            "type": "string",
+            "pattern": "^trust_profile_[A-Za-z0-9._-]+$",
+            "description": "Optional trust profile used in calculating the allocation weight."
+          },
+          "gratitude_receipt_ids": {
+            "type": "array",
+            "description": "Optional gratitude receipt IDs used as supporting evidence.",
+            "items": {
+              "type": "string",
+              "pattern": "^gratitude_[A-Za-z0-9._-]+$"
+            },
+            "uniqueItems": true
+          },
+          "contribution_type": {
+            "type": "string",
+            "enum": [
+              "conceptual_influence",
+              "technical_reference",
+              "code_reuse",
+              "design_inspiration",
+              "review_contribution",
+              "verification_support",
+              "editorial_improvement",
+              "structural_guidance",
+              "philosophical_basis",
+              "governance_input",
+              "translation_support",
+              "prompt_support",
+              "workflow_support",
+              "other"
+            ],
+            "description": "Type of contribution being rewarded or recognized."
+          },
+          "weight_inputs": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Optional input factors used to calculate final_weight.",
+            "properties": {
+              "trace_impact": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Estimated impact of the trace."
+              },
+              "gratitude_weight": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Weight derived from gratitude receipts."
+              },
+              "trust_weight": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Weight derived from the relevant trust profile."
+              },
+              "governance_adjustment": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 2,
+                "description": "Governance adjustment multiplier or factor. 1 means no adjustment."
+              },
+              "decay_factor": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Time decay factor applied to the contribution weight."
+              },
+              "manual_adjustment": {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 1,
+                "description": "Optional manual adjustment applied under governance policy."
+              }
+            }
+          },
+          "final_weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Final normalized contribution weight for this entry."
+          },
+          "allocated_units": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Number of units allocated to this entry."
+          },
+          "allocation_note": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Optional explanation of why this allocation was made."
+          }
+        }
+      }
+    },
+    "allocation_formula": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional formula metadata used to calculate allocation weights.",
+      "properties": {
+        "formula_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier of the allocation formula."
+        },
+        "formula_description": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Human-readable description of the formula."
+        },
+        "formula_expression": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Optional expression or pseudo-formula used for allocation."
+        },
+        "normalization_method": {
+          "type": "string",
+          "enum": [
+            "sum_to_one",
+            "pool_proportional",
+            "thresholded",
+            "capped_proportional",
+            "manual_governance",
+            "other"
+          ],
+          "description": "Normalization method used for final allocation."
+        }
+      }
+    },
+    "governance_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_id"
+      ],
+      "properties": {
+        "policy_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Governance policy used for this allocation."
+        },
+        "minimum_weight_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Minimum final weight required for allocation eligibility."
+        },
+        "maximum_single_contributor_share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Maximum share of the pool that any single contributor may receive."
+        },
+        "decay_enabled": {
+          "type": "boolean",
+          "description": "Whether decay was applied to contribution weights."
+        },
+        "dispute_window_days": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of days during which the allocation may be disputed."
+        },
+        "audit_required": {
+          "type": "boolean",
+          "description": "Whether this allocation requires audit."
+        },
+        "legal_status": {
+          "type": "string",
+          "enum": [
+            "non_binding",
+            "internal_accounting",
+            "experimental",
+            "contractual",
+            "legal_review_required",
+            "unknown"
+          ],
+          "description": "Legal or operational status of this allocation record."
+        },
+        "policy_note": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Optional governance policy note."
+        }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional audit metadata for transparency and review.",
+      "properties": {
+        "audit_status": {
+          "type": "string",
+          "enum": [
+            "not_required",
+            "pending",
+            "passed",
+            "failed",
+            "requires_review"
+          ],
+          "description": "Audit status of the allocation record."
+        },
+        "auditor_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional identifier of the auditor."
+        },
+        "audited_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp when the audit was completed."
+        },
+        "audit_note": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Optional audit note."
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional verification metadata for this allocation record.",
+      "properties": {
+        "verification_method": {
+          "type": "string",
+          "enum": [
+            "automated_calculation",
+            "manual_review",
+            "governance_review",
+            "repository_commit",
+            "hash_only",
+            "cross_agent_review",
+            "other"
+          ],
+          "description": "Method used to verify this allocation record."
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Whether this allocation has passed the stated verification method."
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp when verification was completed."
+        },
+        "verifier_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional identifier of the verifier."
+        },
+        "allocation_hash": {
+          "type": "string",
+          "pattern": "^sha256:[A-Fa-f0-9]{64}$",
+          "description": "Optional hash of the allocation record for integrity verification."
+        }
+      }
+    },
+    "anti_abuse": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional anti-abuse metadata for detecting manipulation, collusion, over-concentration, and false allocation claims.",
+      "properties": {
+        "duplicate_claim_check": {
+          "type": "boolean",
+          "description": "Whether duplicate trace or contribution claims were checked."
+        },
+        "collusion_risk_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated collusion risk score. 0 means low risk; 1 means high risk."
+        },
+        "over_concentration_risk_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated over-concentration risk score. 0 means low risk; 1 means high risk."
+        },
+        "false_provenance_risk_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated false provenance risk score. 0 means low risk; 1 means high risk."
+        },
+        "manual_review_required": {
+          "type": "boolean",
+          "description": "Whether manual review is required due to abuse risk."
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Optional anti-abuse note."
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when this allocation record was created."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional timestamp when this allocation record was last updated."
+    },
+    "tags": {
+      "type": "array",
+      "description": "Optional tags for classification and search.",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "provisional",
+        "active",
+        "pending_audit",
+        "disputed",
+        "settled",
+        "superseded",
+        "withdrawn",
+        "archived",
+        "rejected"
+      ],
+      "description": "Current status of the allocation record."
+    },
+    "status_note": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional explanation of the current allocation status."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "disputed"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "status_note"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "governance_policy": {
+            "properties": {
+              "audit_required": {
+                "const": true
+              }
+            },
+            "required": [
+              "audit_required"
+            ]
+          }
+        },
+        "required": [
+          "governance_policy"
+        ]
+      },
+      "then": {
+        "required": [
+          "audit"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "pending_audit",
+              "provisional",
+              "disputed",
+              "settled"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "value_pool": {
+            "properties": {
+              "pool_type": {
+                "enum": [
+                  "monetary",
+                  "hybrid"
+                ]
+              }
+            },
+            "required": [
+              "pool_type"
+            ]
+          }
+        },
+        "required": [
+          "value_pool"
+        ]
+      },
+      "then": {
+        "properties": {
+          "value_pool": {
+            "required": [
+              "currency"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "examples": [
+    {
+      "schema_version": "0.1",
+      "allocation_id": "allocation_kmni_001",
+      "allocation_period": {
+        "period_label": "initial-kmni-v0.1",
+        "from": "2026-04-26T00:00:00Z",
+        "to": "2026-04-26T00:40:00Z"
+      },
+      "value_pool": {
+        "pool_id": "pool_kmni_network_credit_2026_04",
+        "pool_type": "non_monetary",
+        "total_units": 1000,
+        "unit_name": "network_credit",
+        "pool_description": "Experimental non-monetary network credit pool for the initial KMNI documentation layer."
+      },
+      "distribution_type": "non_monetary_credit",
+      "allocation_basis": [
+        {
+          "entry_id": "allocation_entry_kmni_001",
+          "trace_id": "trace_kmni_concept_001",
+          "contributor_id": "shidenkai_alpha",
+          "contributor_type": "human",
+          "trust_profile_id": "trust_profile_shidenkai_alpha_001",
+          "gratitude_receipt_ids": [
+            "gratitude_kmni_001"
+          ],
+          "contribution_type": "conceptual_influence",
+          "weight_inputs": {
+            "trace_impact": 0.85,
+            "gratitude_weight": 0.82,
+            "trust_weight": 0.76,
+            "governance_adjustment": 1,
+            "decay_factor": 1,
+            "manual_adjustment": 0
+          },
+          "final_weight": 0.42,
+          "allocated_units": 420,
+          "allocation_note": "Initial non-monetary allocation for the KMNI concept trace based on verified gratitude and trust profile inputs."
+        }
+      ],
+      "allocation_formula": {
+        "formula_id": "kmni_weighted_trace_gratitude_trust_v0.1",
+        "formula_description": "Calculates allocation weight from trace impact, gratitude weight, trust weight, governance adjustment, and decay factor.",
+        "formula_expression": "final_weight = normalize(trace_impact * gratitude_weight * trust_weight * governance_adjustment * decay_factor + manual_adjustment)",
+        "normalization_method": "pool_proportional"
+      },
+      "governance_policy": {
+        "policy_id": "royalty_policy_v0.1",
+        "minimum_weight_threshold": 0.05,
+        "maximum_single_contributor_share": 0.5,
+        "decay_enabled": true,
+        "dispute_window_days": 14,
+        "audit_required": false,
+        "legal_status": "experimental",
+        "policy_note": "This sample is an experimental non-monetary allocation record. It does not imply legal ownership or automatic monetary entitlement."
+      },
+      "verification": {
+        "verification_method": "manual_review",
+        "verified": true,
+        "verified_at": "2026-04-26T00:42:00Z",
+        "verifier_id": "review_agent_001",
+        "allocation_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "anti_abuse": {
+        "duplicate_claim_check": true,
+        "collusion_risk_score": 0.04,
+        "over_concentration_risk_score": 0.12,
+        "false_provenance_risk_score": 0.03,
+        "manual_review_required": false,
+        "note": "No duplicate claim, collusion pattern, or false provenance signal detected in this sample allocation."
+      },
+      "created_at": "2026-04-26T00:40:00Z",
+      "updated_at": "2026-04-26T00:42:00Z",
+      "tags": [
+        "kazene",
+        "royalty-os",
+        "value-allocation",
+        "kmni",
+        "network-credit"
+      ],
+      "status": "active",
+      "status_note": "Active sample allocation for initial KMNI non-monetary value circulation."
+    }
+  ]
+}

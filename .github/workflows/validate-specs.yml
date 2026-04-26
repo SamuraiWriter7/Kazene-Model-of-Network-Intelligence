@@ -1,0 +1,149 @@
+name: Validate Specs
+
+on:
+  push:
+    paths:
+      - "schemas/**"
+      - "examples/**"
+      - ".github/workflows/validate-specs.yml"
+  pull_request:
+    paths:
+      - "schemas/**"
+      - "examples/**"
+      - ".github/workflows/validate-specs.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install jsonschema PyYAML
+
+      - name: Debug file tree
+        run: |
+          pwd
+          find . -maxdepth 4 -type f | sort
+
+      - name: Validate KMNI specification examples
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          import yaml
+          from jsonschema import Draft202012Validator
+
+
+          VALIDATION_TARGETS = [
+              {
+                  "name": "Trace Record v0.1",
+                  "schema": "schemas/trace-record-v0.1.schema.json",
+                  "sample": "examples/trace-record.sample.yaml",
+              },
+              {
+                  "name": "Gratitude Receipt v0.1",
+                  "schema": "schemas/gratitude-receipt-v0.1.schema.json",
+                  "sample": "examples/gratitude-receipt.sample.yaml",
+              },
+              {
+                  "name": "Trust Profile v0.1",
+                  "schema": "schemas/trust-profile-v0.1.schema.json",
+                  "sample": "examples/trust-profile.sample.yaml",
+              },
+              {
+                  "name": "Value Allocation v0.1",
+                  "schema": "schemas/value-allocation-v0.1.schema.json",
+                  "sample": "examples/value-allocation.sample.yaml",
+              },
+          ]
+
+
+          def load_json(path: Path):
+              with path.open("r", encoding="utf-8") as f:
+                  return json.load(f)
+
+
+          def load_yaml(path: Path):
+              with path.open("r", encoding="utf-8") as f:
+                  return yaml.safe_load(f)
+
+
+          def format_error(error):
+              location = ".".join(str(part) for part in error.absolute_path)
+              if not location:
+                  location = "<root>"
+              return f"{location}: {error.message}"
+
+
+          failed = False
+
+          for target in VALIDATION_TARGETS:
+              name = target["name"]
+              schema_path = Path(target["schema"])
+              sample_path = Path(target["sample"])
+
+              print(f"\n=== Validating {name} ===")
+              print(f"Schema: {schema_path}")
+              print(f"Sample: {sample_path}")
+
+              if not schema_path.exists():
+                  print(f"ERROR: Schema file not found: {schema_path}")
+                  failed = True
+                  continue
+
+              if not sample_path.exists():
+                  print(f"ERROR: Sample file not found: {sample_path}")
+                  failed = True
+                  continue
+
+              try:
+                  schema = load_json(schema_path)
+              except Exception as exc:
+                  print(f"ERROR: Failed to load schema JSON: {exc}")
+                  failed = True
+                  continue
+
+              try:
+                  Draft202012Validator.check_schema(schema)
+              except Exception as exc:
+                  print(f"ERROR: Invalid JSON Schema: {exc}")
+                  failed = True
+                  continue
+
+              try:
+                  sample = load_yaml(sample_path)
+              except Exception as exc:
+                  print(f"ERROR: Failed to load sample YAML: {exc}")
+                  failed = True
+                  continue
+
+              validator = Draft202012Validator(schema)
+              errors = sorted(validator.iter_errors(sample), key=lambda e: list(e.absolute_path))
+
+              if errors:
+                  print(f"ERROR: {name} sample failed validation:")
+                  for error in errors:
+                      print(f"  - {format_error(error)}")
+                  failed = True
+              else:
+                  print(f"OK: {name} sample is valid.")
+
+          if failed:
+              print("\nValidation failed.")
+              sys.exit(1)
+
+          print("\nAll KMNI specification examples are valid.")
+          PY

@@ -1,0 +1,344 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kazene.org/schemas/trace-record-v0.1.schema.json",
+  "title": "Trace Record v0.1",
+  "description": "A JSON Schema for registering and verifying a trace in the Kazene Model of Network Intelligence (KMNI). A trace is the smallest meaningful unit of contribution used by Existence Proof OS, Gratitude OS, Trust OS, and Royalty OS.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trace_id",
+    "trace_type",
+    "trace_hash",
+    "creator",
+    "created_at",
+    "provenance",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1",
+      "description": "Schema version of this trace record."
+    },
+    "trace_id": {
+      "type": "string",
+      "pattern": "^trace_[A-Za-z0-9._-]+$",
+      "description": "Unique identifier for the trace."
+    },
+    "trace_type": {
+      "type": "string",
+      "enum": [
+        "idea",
+        "concept",
+        "prompt",
+        "code",
+        "document",
+        "reasoning_fragment",
+        "feedback",
+        "review_comment",
+        "verification_result",
+        "design_decision",
+        "protocol_specification",
+        "governance_proposal",
+        "edited_passage",
+        "translated_text",
+        "model_output",
+        "agent_action_log",
+        "other"
+      ],
+      "description": "Type of contribution represented by this trace."
+    },
+    "trace_hash": {
+      "type": "string",
+      "pattern": "^sha256:[A-Fa-f0-9]{64}$",
+      "description": "SHA-256 hash of the trace content in the format sha256:<64 hex characters>."
+    },
+    "content_reference": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional reference to the content location, such as a file path, repository path, URI, or internal content pointer."
+    },
+    "content_summary": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional human-readable summary of the trace content."
+    },
+    "creator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "creator_id",
+        "creator_type"
+      ],
+      "properties": {
+        "creator_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier of the creator or registering actor."
+        },
+        "creator_type": {
+          "type": "string",
+          "enum": [
+            "human",
+            "ai_agent",
+            "model",
+            "repository",
+            "organization",
+            "protocol",
+            "hybrid_workflow",
+            "unknown"
+          ],
+          "description": "Type of entity associated with the trace creation or registration."
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional display name of the creator."
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional role of the creator in the workflow, such as author, reviewer, editor, generator, verifier, or maintainer."
+        },
+        "model_family": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional model family or agent family when creator_type is ai_agent or model."
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the trace was created or registered."
+    },
+    "registered_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional timestamp when the trace was registered in the Existence Proof OS."
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "original_draft",
+        "ai_generated",
+        "human_edited",
+        "ai_assisted",
+        "translated",
+        "reviewed",
+        "forked",
+        "derived_from_existing_trace",
+        "merged_from_multiple_traces",
+        "verified_output",
+        "governance_decision",
+        "unknown"
+      ],
+      "description": "Origin path of the trace. This describes how the trace came into existence; it does not by itself imply ownership, value, or royalty entitlement."
+    },
+    "parent_traces": {
+      "type": "array",
+      "description": "Optional list of parent trace IDs when this trace was derived from or influenced by earlier traces.",
+      "items": {
+        "type": "string",
+        "pattern": "^trace_[A-Za-z0-9._-]+$"
+      },
+      "uniqueItems": true
+    },
+    "lineage_note": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional explanation of how this trace relates to parent traces."
+    },
+    "disclosure": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Privacy and disclosure settings for the trace.",
+      "properties": {
+        "disclosure_level": {
+          "type": "string",
+          "enum": [
+            "public",
+            "metadata_only",
+            "hash_only",
+            "permissioned",
+            "encrypted",
+            "private"
+          ],
+          "description": "Level of disclosure for this trace."
+        },
+        "content_access": {
+          "type": "string",
+          "enum": [
+            "open",
+            "restricted",
+            "permission_required",
+            "unavailable"
+          ],
+          "description": "Access status of the trace content."
+        },
+        "privacy_note": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Optional explanation of privacy constraints or selective disclosure logic."
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional verification metadata for integrity, timestamp, and attestation.",
+      "properties": {
+        "verification_method": {
+          "type": "string",
+          "enum": [
+            "hash_only",
+            "digital_signature",
+            "repository_commit",
+            "trusted_timestamp",
+            "merkle_commitment",
+            "zero_knowledge_proof",
+            "manual_attestation",
+            "other"
+          ],
+          "description": "Method used to verify the trace."
+        },
+        "signature": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional cryptographic signature or attestation value."
+        },
+        "public_key_reference": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional reference to the public key used for signature verification."
+        },
+        "commit_reference": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional repository commit hash or commit URL."
+        },
+        "merkle_root": {
+          "type": "string",
+          "pattern": "^sha256:[A-Fa-f0-9]{64}$",
+          "description": "Optional Merkle root commitment in the format sha256:<64 hex characters>."
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Whether the trace has passed the stated verification method."
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp when verification was completed."
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Optional tags for classification and search.",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "superseded",
+        "deprecated",
+        "disputed",
+        "withdrawn",
+        "archived"
+      ],
+      "description": "Current status of the trace record."
+    },
+    "status_note": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional explanation of the current trace status."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "provenance": {
+            "const": "derived_from_existing_trace"
+          }
+        },
+        "required": [
+          "provenance"
+        ]
+      },
+      "then": {
+        "required": [
+          "parent_traces"
+        ],
+        "properties": {
+          "parent_traces": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "provenance": {
+            "const": "merged_from_multiple_traces"
+          }
+        },
+        "required": [
+          "provenance"
+        ]
+      },
+      "then": {
+        "required": [
+          "parent_traces"
+        ],
+        "properties": {
+          "parent_traces": {
+            "minItems": 2
+          }
+        }
+      }
+    }
+  ],
+  "examples": [
+    {
+      "schema_version": "0.1",
+      "trace_id": "trace_001",
+      "trace_type": "concept",
+      "trace_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "content_reference": "docs/whitepaper-v0.1.md",
+      "content_summary": "Initial concept definition for the Kazene Model of Network Intelligence.",
+      "creator": {
+        "creator_id": "human_or_agent_001",
+        "creator_type": "human",
+        "display_name": "Shidenkai Alpha",
+        "role": "author"
+      },
+      "created_at": "2026-04-26T00:00:00Z",
+      "registered_at": "2026-04-26T00:05:00Z",
+      "provenance": "original_draft",
+      "disclosure": {
+        "disclosure_level": "public",
+        "content_access": "open"
+      },
+      "verification": {
+        "verification_method": "hash_only",
+        "verified": true,
+        "verified_at": "2026-04-26T00:06:00Z"
+      },
+      "tags": [
+        "kazene",
+        "network-intelligence",
+        "trace"
+      ],
+      "status": "active"
+    }
+  ]
+}

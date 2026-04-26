@@ -1,0 +1,115 @@
+schema_version: "0.1"
+
+profile_id: trust_profile_shidenkai_alpha_001
+
+subject:
+  subject_id: shidenkai_alpha
+  subject_type: human
+  display_name: Shidenkai Alpha
+  role: concept_author
+
+calculated_at: "2026-04-26T00:20:00Z"
+
+calculation_period:
+  from: "2026-04-26T00:00:00Z"
+  to: "2026-04-26T00:20:00Z"
+  period_label: initial-kmni-v0.1
+
+trust_score: 0.76
+
+trust_dimensions:
+  creativity: 0.90
+  reliability: 0.68
+  collaboration: 0.74
+  verification_quality: 0.70
+  structural_contribution: 0.88
+  governance_alignment: 0.72
+  resilience: 0.71
+  continuity: 0.69
+
+input_summary:
+  verified_traces: 1
+  gratitude_receipts: 1
+  successful_collaborations: 1
+  verification_events: 1
+  disputed_events: 0
+  rejected_events: 0
+
+source_traces:
+  - trace_kmni_concept_001
+
+source_gratitude_receipts:
+  - gratitude_kmni_001
+
+trust_update_events:
+  - event_id: trust_update_kmni_001
+    event_type: gratitude_aggregation
+    source_trace_id: trace_kmni_concept_001
+    source_gratitude_id: gratitude_kmni_001
+    dimension_changes:
+      creativity: 0.02
+      structural_contribution: 0.03
+      collaboration: 0.01
+    reason: >-
+      The KMNI concept trace received a verified gratitude receipt for
+      conceptual influence on the Gratitude OS relationship document.
+      This indicates early structural contribution to the KMNI documentation layer.
+    occurred_at: "2026-04-26T00:18:00Z"
+
+role_recommendations:
+  - role: protocol_design
+    confidence: 0.86
+    reason: >-
+      High structural contribution and creativity scores indicate strong
+      suitability for conceptual protocol design.
+  - role: concept_generation
+    confidence: 0.83
+    reason: >-
+      The subject generated the initial conceptual structure of KMNI,
+      including the trace, gratitude, trust, and value circulation cycle.
+
+decay_policy:
+  enabled: true
+  half_life_days: 180
+  minimum_retained_weight: 0.20
+  protected_dimensions:
+    - structural_contribution
+    - historical_contribution
+
+governance:
+  policy_id: trust_policy_v0.1
+  eligible_for_value_allocation: true
+  eligible_for_governance_participation: true
+  review_required: false
+  governance_note: >-
+    This initial trust profile is eligible for use in non-monetary KMNI
+    value allocation examples. It does not imply legal ownership or
+    automatic monetary entitlement.
+
+verification:
+  verification_method: manual_review
+  verified: true
+  verified_at: "2026-04-26T00:22:00Z"
+  verifier_id: review_agent_001
+  profile_hash: sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+anti_abuse:
+  sybil_risk_score: 0.02
+  collusion_risk_score: 0.04
+  gratitude_loop_detected: false
+  manual_review_required: false
+  note: >-
+    This sample profile is based on one verified trace and one gratitude
+    receipt. It is intended as a minimal demonstration and should not be
+    treated as a mature production trust score.
+
+tags:
+  - kazene
+  - trust-os
+  - kmni
+  - structural-trust
+  - network-intelligence
+
+status: active
+status_note: >-
+  Active sample trust profile for the initial KMNI concept author.

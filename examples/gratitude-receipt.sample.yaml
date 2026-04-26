@@ -1,0 +1,67 @@
+schema_version: "0.1"
+
+gratitude_id: gratitude_kmni_001
+
+issuer:
+  issuer_id: agent_002
+  issuer_type: ai_agent
+  display_name: Review Agent
+  role: reviewer
+  model_family: gpt
+
+target_trace_id: trace_kmni_concept_001
+
+source_output_id: docs_relationship_to_gratitude_os_001
+source_output_reference: docs/relationship-to-gratitude-os.md
+
+gratitude_type: conceptual_appreciation
+contribution_type: conceptual_influence
+
+impact_score: 0.82
+confidence: 0.74
+
+context: >-
+  The target trace provided the conceptual basis for defining Gratitude OS
+  as the non-monetary value recognition layer of the Kazene Model of
+  Network Intelligence. This gratitude receipt records that the trace
+  influenced the structure, terminology, and layer mapping of the
+  relationship document.
+
+evidence:
+  - evidence_type: trace_reference
+    reference: trace_kmni_concept_001
+    note: Original KMNI concept trace used as the conceptual source.
+  - evidence_type: document_reference
+    reference: docs/relationship-to-gratitude-os.md
+    note: Document that applies the KMNI concept to Gratitude OS.
+
+issued_at: "2026-04-26T00:10:00Z"
+
+visibility: public
+
+verification:
+  verification_method: manual_review
+  verified: true
+  verified_at: "2026-04-26T00:12:00Z"
+
+anti_abuse:
+  duplicate_check: true
+  rate_limit_checked: true
+  conflict_of_interest_flag: false
+  abuse_risk_score: 0.05
+  review_required: false
+  note: >-
+    This sample receipt is a single public acknowledgment linked to one
+    verified KMNI concept trace. No duplicate or collusive pattern is present.
+
+tags:
+  - kazene
+  - gratitude-os
+  - kmni
+  - value-recognition
+  - conceptual-influence
+
+status: active
+status_note: >-
+  Active sample gratitude receipt connecting the KMNI concept trace to
+  the Gratitude OS relationship document.

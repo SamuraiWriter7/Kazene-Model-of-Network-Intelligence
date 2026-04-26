@@ -1,0 +1,385 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kazene.org/schemas/gratitude-receipt-v0.1.schema.json",
+  "title": "Gratitude Receipt v0.1",
+  "description": "A JSON Schema for recording non-monetary value recognition in the Kazene Model of Network Intelligence (KMNI). A gratitude receipt links an issuer to a target trace and records how that trace influenced an actor, agent, document, protocol, or system.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gratitude_id",
+    "issuer",
+    "target_trace_id",
+    "gratitude_type",
+    "contribution_type",
+    "impact_score",
+    "issued_at",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1",
+      "description": "Schema version of this gratitude receipt."
+    },
+    "gratitude_id": {
+      "type": "string",
+      "pattern": "^gratitude_[A-Za-z0-9._-]+$",
+      "description": "Unique identifier for the gratitude receipt."
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuer_id",
+        "issuer_type"
+      ],
+      "properties": {
+        "issuer_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier of the human, AI agent, model, repository, organization, protocol, or workflow issuing the gratitude receipt."
+        },
+        "issuer_type": {
+          "type": "string",
+          "enum": [
+            "human",
+            "ai_agent",
+            "model",
+            "repository",
+            "organization",
+            "protocol",
+            "hybrid_workflow",
+            "unknown"
+          ],
+          "description": "Type of entity issuing the gratitude receipt."
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional display name of the issuer."
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional role of the issuer in the workflow, such as reviewer, user, generator, verifier, editor, maintainer, or protocol_actor."
+        },
+        "model_family": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional model family or agent family when issuer_type is ai_agent or model."
+        }
+      }
+    },
+    "target_trace_id": {
+      "type": "string",
+      "pattern": "^trace_[A-Za-z0-9._-]+$",
+      "description": "The trace ID receiving gratitude. This should refer to a trace registered by Existence Proof OS."
+    },
+    "source_output_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional identifier for the output, document, task, protocol, or system that was influenced by the target trace."
+    },
+    "source_output_reference": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional reference to the influenced output, such as a file path, repository path, URI, or internal pointer."
+    },
+    "gratitude_type": {
+      "type": "string",
+      "enum": [
+        "acknowledgment",
+        "influence_recognition",
+        "reuse_recognition",
+        "review_appreciation",
+        "verification_appreciation",
+        "design_appreciation",
+        "conceptual_appreciation",
+        "governance_appreciation",
+        "other"
+      ],
+      "description": "Type of gratitude being recorded."
+    },
+    "contribution_type": {
+      "type": "string",
+      "enum": [
+        "conceptual_influence",
+        "technical_reference",
+        "code_reuse",
+        "design_inspiration",
+        "review_contribution",
+        "verification_support",
+        "editorial_improvement",
+        "structural_guidance",
+        "philosophical_basis",
+        "governance_input",
+        "translation_support",
+        "prompt_support",
+        "workflow_support",
+        "other"
+      ],
+      "description": "Type of contribution recognized by this gratitude receipt."
+    },
+    "impact_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Contextual estimate of how strongly the target trace influenced the issuer or source output. 0 means no meaningful impact; 1 means extremely high impact."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Optional confidence level for the gratitude claim. 0 means very uncertain; 1 means highly confident."
+    },
+    "context": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Human-readable explanation of why gratitude was issued and how the trace contributed."
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Optional evidence references supporting the gratitude claim.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "evidence_type",
+          "reference"
+        ],
+        "properties": {
+          "evidence_type": {
+            "type": "string",
+            "enum": [
+              "trace_reference",
+              "document_reference",
+              "repository_commit",
+              "diff",
+              "citation",
+              "usage_log",
+              "agent_log",
+              "manual_attestation",
+              "other"
+            ],
+            "description": "Type of evidence used to support the gratitude claim."
+          },
+          "reference": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Reference value, such as trace ID, file path, commit hash, URI, citation, or internal pointer."
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Optional explanation of the evidence reference."
+          }
+        }
+      }
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the gratitude receipt was issued."
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional expiration timestamp for operational use. Historical records may remain archived even after expiration."
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "metadata_only",
+        "permissioned",
+        "private"
+      ],
+      "description": "Visibility level of this gratitude receipt."
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional verification metadata for the gratitude receipt.",
+      "properties": {
+        "verification_method": {
+          "type": "string",
+          "enum": [
+            "issuer_signature",
+            "repository_commit",
+            "agent_log",
+            "manual_review",
+            "cross_agent_confirmation",
+            "hash_only",
+            "other"
+          ],
+          "description": "Method used to verify this gratitude receipt."
+        },
+        "signature": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional cryptographic signature or attestation value."
+        },
+        "public_key_reference": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional reference to the public key used for signature verification."
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Whether the gratitude receipt has passed the stated verification method."
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp when verification was completed."
+        }
+      }
+    },
+    "anti_abuse": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional anti-abuse metadata used to reduce gratitude spam, collusion, and artificial trust inflation.",
+      "properties": {
+        "duplicate_check": {
+          "type": "boolean",
+          "description": "Whether duplicate gratitude detection was performed."
+        },
+        "rate_limit_checked": {
+          "type": "boolean",
+          "description": "Whether issuer rate limits were checked."
+        },
+        "conflict_of_interest_flag": {
+          "type": "boolean",
+          "description": "Whether a potential conflict of interest was detected or declared."
+        },
+        "abuse_risk_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated abuse risk score. 0 means low risk; 1 means high risk."
+        },
+        "review_required": {
+          "type": "boolean",
+          "description": "Whether manual or governance review is required before this receipt is used for trust or allocation."
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Optional anti-abuse note."
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Optional tags for classification and search.",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "superseded",
+        "disputed",
+        "withdrawn",
+        "archived",
+        "rejected"
+      ],
+      "description": "Current status of the gratitude receipt."
+    },
+    "status_note": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional explanation of the current gratitude receipt status."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "disputed"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "status_note"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "impact_score": {
+            "minimum": 0.8
+          }
+        },
+        "required": [
+          "impact_score"
+        ]
+      },
+      "then": {
+        "required": [
+          "context"
+        ]
+      }
+    }
+  ],
+  "examples": [
+    {
+      "schema_version": "0.1",
+      "gratitude_id": "gratitude_kmni_001",
+      "issuer": {
+        "issuer_id": "agent_002",
+        "issuer_type": "ai_agent",
+        "display_name": "Review Agent",
+        "role": "reviewer",
+        "model_family": "gpt"
+      },
+      "target_trace_id": "trace_kmni_concept_001",
+      "source_output_id": "docs_relationship_to_gratitude_os_001",
+      "source_output_reference": "docs/relationship-to-gratitude-os.md",
+      "gratitude_type": "conceptual_appreciation",
+      "contribution_type": "conceptual_influence",
+      "impact_score": 0.82,
+      "confidence": 0.74,
+      "context": "The target trace provided the conceptual basis for defining Gratitude OS as the non-monetary value recognition layer of KMNI.",
+      "evidence": [
+        {
+          "evidence_type": "trace_reference",
+          "reference": "trace_kmni_concept_001",
+          "note": "Original KMNI concept trace."
+        }
+      ],
+      "issued_at": "2026-04-26T00:10:00Z",
+      "visibility": "public",
+      "verification": {
+        "verification_method": "manual_review",
+        "verified": true,
+        "verified_at": "2026-04-26T00:12:00Z"
+      },
+      "anti_abuse": {
+        "duplicate_check": true,
+        "rate_limit_checked": true,
+        "conflict_of_interest_flag": false,
+        "abuse_risk_score": 0.05,
+        "review_required": false
+      },
+      "tags": [
+        "kazene",
+        "gratitude-os",
+        "kmni",
+        "value-recognition"
+      ],
+      "status": "active"
+    }
+  ]
+}

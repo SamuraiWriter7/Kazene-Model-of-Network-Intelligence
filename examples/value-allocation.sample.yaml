@@ -1,0 +1,101 @@
+schema_version: "0.1"
+
+allocation_id: allocation_kmni_001
+
+allocation_period:
+  period_label: initial-kmni-v0.1
+  from: "2026-04-26T00:00:00Z"
+  to: "2026-04-26T00:40:00Z"
+
+value_pool:
+  pool_id: pool_kmni_network_credit_2026_04
+  pool_type: non_monetary
+  total_units: 1000
+  unit_name: network_credit
+  pool_description: >-
+    Experimental non-monetary network credit pool for the initial KMNI
+    documentation layer. This pool is used to demonstrate value circulation
+    without creating monetary, legal, or contractual obligations.
+
+distribution_type: non_monetary_credit
+
+allocation_basis:
+  - entry_id: allocation_entry_kmni_001
+    trace_id: trace_kmni_concept_001
+    contributor_id: shidenkai_alpha
+    contributor_type: human
+    trust_profile_id: trust_profile_shidenkai_alpha_001
+    gratitude_receipt_ids:
+      - gratitude_kmni_001
+    contribution_type: conceptual_influence
+    weight_inputs:
+      trace_impact: 0.85
+      gratitude_weight: 0.82
+      trust_weight: 0.76
+      governance_adjustment: 1.00
+      decay_factor: 1.00
+      manual_adjustment: 0.00
+    final_weight: 0.42
+    allocated_units: 420
+    allocation_note: >-
+      Initial non-monetary allocation for the KMNI concept trace based on
+      verified trace evidence, gratitude recognition, and the corresponding
+      trust profile. This allocation represents network credit, not money.
+
+allocation_formula:
+  formula_id: kmni_weighted_trace_gratitude_trust_v0.1
+  formula_description: >-
+    Calculates allocation weight from trace impact, gratitude weight,
+    trust weight, governance adjustment, and decay factor. The result is
+    normalized against the available value pool.
+  formula_expression: >-
+    final_weight = normalize(trace_impact * gratitude_weight * trust_weight
+    * governance_adjustment * decay_factor + manual_adjustment)
+  normalization_method: pool_proportional
+
+governance_policy:
+  policy_id: royalty_policy_v0.1
+  minimum_weight_threshold: 0.05
+  maximum_single_contributor_share: 0.50
+  decay_enabled: true
+  dispute_window_days: 14
+  audit_required: false
+  legal_status: experimental
+  policy_note: >-
+    This sample is an experimental non-monetary allocation record. It does
+    not imply legal ownership, financial payment, contractual royalty, or
+    automatic monetary entitlement.
+
+verification:
+  verification_method: manual_review
+  verified: true
+  verified_at: "2026-04-26T00:42:00Z"
+  verifier_id: review_agent_001
+  allocation_hash: sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+anti_abuse:
+  duplicate_claim_check: true
+  collusion_risk_score: 0.04
+  over_concentration_risk_score: 0.12
+  false_provenance_risk_score: 0.03
+  manual_review_required: false
+  note: >-
+    No duplicate claim, collusion pattern, or false provenance signal was
+    detected in this sample allocation. Because this is a minimal example,
+    it should not be treated as a production-grade allocation result.
+
+created_at: "2026-04-26T00:40:00Z"
+updated_at: "2026-04-26T00:42:00Z"
+
+tags:
+  - kazene
+  - royalty-os
+  - value-allocation
+  - kmni
+  - network-credit
+  - non-monetary-circulation
+
+status: active
+status_note: >-
+  Active sample allocation for the initial KMNI non-monetary value circulation
+  chain: Trace Record -> Gratitude Receipt -> Trust Profile -> Value Allocation.
